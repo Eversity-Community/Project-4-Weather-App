@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2a3e62;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #app {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        #weatherDisplay {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1>🌦️ Weather App</h1>
+        <input type="text" id="cityInput" placeholder="Enter city name">
+        <button id="getWeather">Get Weather</button>
+        <div id="weatherDisplay"></div>
+    </div>
+    <p style="color: white;">Made with ❤️ Eversity</p>
+    <script>
+        const apiKey = '61a7d7e1e834ef775570792e1cafac38';
+        const weatherDisplay = document.getElementById('weatherDisplay');
+        const getWeather = document.getElementById('getWeather');
+        const cityInput = document.getElementById('cityInput');
+
+        getWeather.addEventListener('click', () => {
+            const city = cityInput.value;
+            if (city) {
+                fetchWeather(city);
+            } else {
+                weatherDisplay.textContent = 'Please enter a city name!';
+            }
+        });
+
+        const fetchWeather = async (city) => {
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+                const data = await response.json();
+                if (data.cod === 200) {
+                    displayWeather(data);
+                } else {
+                    weatherDisplay.textContent = data.message;
+                }
+            } catch (error) {
+                weatherDisplay.textContent = 'Error fetching data. Please try again later.';
+            }
+        };
+
+        const displayWeather = (data) => {
+            const { name, main, weather } = data;
+            weatherDisplay.innerHTML = `
+        <h2>${name}</h2>
+        <p>Temperature: ${main.temp}°C</p>
+        <p>Weather: ${weather[0].description}</p>
+      `;
+        };
+    </script>
+</body>
+
+</html>
